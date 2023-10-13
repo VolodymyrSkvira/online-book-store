@@ -9,22 +9,20 @@ import jakarta.persistence.Table;
 import java.math.BigDecimal;
 
 @Entity
-@Table(name = "Books")
+@Table(name = "books")
 public class Book {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(name = "Title", nullable = false)
+    @Column(nullable = false)
     private String title;
-    @Column(name = "Author", nullable = false)
+    @Column(nullable = false)
     private String author;
-    @Column(name = "Isbn", nullable = false, unique = true)
+    @Column(nullable = false, unique = true)
     private String isbn;
-    @Column(name = "Price", nullable = false)
+    @Column(nullable = false)
     private BigDecimal price;
-    @Column(name = "Description")
     private String description;
-    @Column(name = "Cover_Image")
     private String coverImage;
 
     public Long getId() {

@@ -6,8 +6,8 @@ import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
-import s.volodymyr.onlinebookstore.exception.BookNotFoundException;
-import s.volodymyr.onlinebookstore.exception.BookNotSavedException;
+import s.volodymyr.onlinebookstore.exception.DataProcessingException;
+import s.volodymyr.onlinebookstore.exception.EntityNotFoundException;
 import s.volodymyr.onlinebookstore.model.Book;
 import s.volodymyr.onlinebookstore.repository.BookRepository;
 
@@ -22,7 +22,7 @@ public class BookRepositoryImpl implements BookRepository {
             sessionFactory.inTransaction(session -> session.persist(book));
             return book;
         } catch (Exception e) {
-            throw new BookNotSavedException("Cannot save new book", e);
+            throw new DataProcessingException("Cannot save new book", e);
         }
     }
 
@@ -33,7 +33,7 @@ public class BookRepositoryImpl implements BookRepository {
                     "from Book", Book.class);
             return getAllBooks.getResultList();
         } catch (Exception e) {
-            throw new BookNotFoundException("Cannot get all books", e);
+            throw new EntityNotFoundException("Cannot get all books", e);
         }
     }
 }
