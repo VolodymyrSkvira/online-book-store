@@ -1,10 +1,9 @@
 package s.volodymyr.onlinebookstore.repository.impl;
 
 import java.util.List;
+import lombok.RequiredArgsConstructor;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.query.Query;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import s.volodymyr.onlinebookstore.exception.DataProcessingException;
 import s.volodymyr.onlinebookstore.exception.EntityNotFoundException;
@@ -12,9 +11,10 @@ import s.volodymyr.onlinebookstore.model.Book;
 import s.volodymyr.onlinebookstore.repository.BookRepository;
 
 @Repository
+@RequiredArgsConstructor
 public class BookRepositoryImpl implements BookRepository {
-    @Autowired
-    private SessionFactory sessionFactory;
+
+    private final SessionFactory sessionFactory;
 
     @Override
     public Book save(Book book) {
@@ -29,9 +29,7 @@ public class BookRepositoryImpl implements BookRepository {
     @Override
     public List<Book> findAll() {
         try (Session session = sessionFactory.openSession()) {
-            Query<Book> getAllBooks = session.createQuery(
-                    "from Book", Book.class);
-            return getAllBooks.getResultList();
+            return session.createQuery("from Book", Book.class).getResultList();
         } catch (Exception e) {
             throw new EntityNotFoundException("Cannot get all books", e);
         }
