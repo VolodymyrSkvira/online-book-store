@@ -10,4 +10,3 @@ public class OnlineBookStoreApplication {
         SpringApplication.run(OnlineBookStoreApplication.class, args);
     }
 }
-
