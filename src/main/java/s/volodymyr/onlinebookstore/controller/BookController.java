@@ -23,11 +23,13 @@ import s.volodymyr.onlinebookstore.service.BookService;
 public class BookController {
     private final BookService bookService;
 
+    @ResponseStatus(HttpStatus.ACCEPTED)
     @GetMapping
     public List<BookDto> getAll() {
         return bookService.findAll();
     }
 
+    @ResponseStatus(HttpStatus.ACCEPTED)
     @GetMapping("/{id}")
     public BookDto getBookById(@PathVariable Long id) {
         return bookService.getBookById(id);
@@ -39,16 +41,19 @@ public class BookController {
         bookService.deleteById(id);
     }
 
+    @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
     public BookDto createBook(@RequestBody CreateBookRequestDto requestDto) {
         return bookService.save(requestDto);
     }
 
+    @ResponseStatus(HttpStatus.ACCEPTED)
     @GetMapping("/search")
     public List<BookDto> search(BookSearchParameters searchParameters) {
         return bookService.search(searchParameters);
     }
 
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     @PutMapping("/{id}")
     public BookDto update(@RequestBody CreateBookRequestDto bookRequestDto, @PathVariable Long id) {
         return bookService.update(bookRequestDto, id);
