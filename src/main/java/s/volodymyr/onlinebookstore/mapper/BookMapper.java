@@ -4,8 +4,8 @@ import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.NullValueCheckStrategy;
-import s.volodymyr.onlinebookstore.dto.BookDto;
-import s.volodymyr.onlinebookstore.dto.CreateBookRequestDto;
+import s.volodymyr.onlinebookstore.dto.book.BookDto;
+import s.volodymyr.onlinebookstore.dto.book.CreateBookRequestDto;
 import s.volodymyr.onlinebookstore.model.Book;
 
 @Mapper(componentModel = "spring",
