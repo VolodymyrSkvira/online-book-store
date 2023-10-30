@@ -3,22 +3,30 @@ package s.volodymyr.onlinebookstore.validation;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 import lombok.RequiredArgsConstructor;
-import s.volodymyr.onlinebookstore.dto.user.UserRegistrationRequestDto;
+import org.springframework.beans.BeanWrapperImpl;
 
 @RequiredArgsConstructor
-public class FieldMatcherValidator implements ConstraintValidator<
-        FieldMatch,
-        UserRegistrationRequestDto> {
+public class FieldMatcherValidator
+        implements ConstraintValidator<FieldMatch, Object> {
+    private String field;
+    private String fieldMatch;
 
-    private final UserRegistrationRequestDto registrationRequestDto;
+    public void initialize(FieldMatch fieldMatch) {
+        this.field = fieldMatch.field();
+        this.fieldMatch = fieldMatch.fieldMatch();
+    }
 
     @Override
     public boolean isValid(
-            UserRegistrationRequestDto registrationRequestDto,
+            Object object,
             ConstraintValidatorContext constraintValidatorContext
     ) {
-        String password = registrationRequestDto.password();
-        String repeatPassword = registrationRequestDto.repeatPassword();
-        return password != null && password.equals(repeatPassword);
+        Object password = new BeanWrapperImpl(object).getPropertyValue(field);
+        Object repeatPassword = new BeanWrapperImpl(object).getPropertyValue(fieldMatch);
+        if (password != null) {
+            return password.equals(repeatPassword);
+        } else {
+            return false;
+        }
     }
 }
