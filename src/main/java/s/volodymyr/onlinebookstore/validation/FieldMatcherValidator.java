@@ -23,10 +23,6 @@ public class FieldMatcherValidator
     ) {
         Object password = new BeanWrapperImpl(object).getPropertyValue(field);
         Object repeatPassword = new BeanWrapperImpl(object).getPropertyValue(fieldMatch);
-        if (password != null) {
-            return password.equals(repeatPassword);
-        } else {
-            return false;
-        }
+        return password != null && password.equals(repeatPassword);
     }
 }

@@ -14,9 +14,9 @@ import s.volodymyr.onlinebookstore.model.User;
         implementationPackage = "<PACKAGE_NAME>.impl"
 )
 public interface UserMapper {
-    UserDto toDto(User user);
+    UserDto toUserDto(User user);
 
     User toUser(UserRegistrationRequestDto requestDto);
 
-    UserResponseDto toResponseDto(User user);
+    UserResponseDto toUserResponseDto(User user);
 }

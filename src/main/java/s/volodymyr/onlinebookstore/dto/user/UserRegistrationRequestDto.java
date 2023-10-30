@@ -9,7 +9,6 @@ import s.volodymyr.onlinebookstore.validation.FieldMatch;
             field = "password",
             fieldMatch = "repeatPassword")
 public record UserRegistrationRequestDto(
-
         @Email
         @NotBlank
         @Size(min = 4, max = 30)
