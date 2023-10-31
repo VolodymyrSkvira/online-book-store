@@ -4,7 +4,7 @@ import java.util.Arrays;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
-import s.volodymyr.onlinebookstore.dto.BookSearchParameters;
+import s.volodymyr.onlinebookstore.dto.book.BookSearchParameters;
 import s.volodymyr.onlinebookstore.model.Book;
 
 @RequiredArgsConstructor
