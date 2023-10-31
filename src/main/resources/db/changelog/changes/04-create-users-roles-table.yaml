@@ -20,4 +20,3 @@ databaseChangeLog:
                     foreignKeyName: fk_users_roles_roles
                     references: roles(id)
                     nullable: false
-

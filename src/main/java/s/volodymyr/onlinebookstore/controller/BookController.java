@@ -33,6 +33,7 @@ import s.volodymyr.onlinebookstore.service.BookService;
 public class BookController {
     private final BookService bookService;
 
+    @PreAuthorize("hasAnyRole('USER','ADMIN')")
     @ResponseStatus(HttpStatus.ACCEPTED)
     @GetMapping
     @Operation(summary = "Get all books", description = "Get a list of available books")
@@ -40,6 +41,7 @@ public class BookController {
         return bookService.findAll(pageable);
     }
 
+    @PreAuthorize("hasAnyRole('USER','ADMIN')")
     @ResponseStatus(HttpStatus.ACCEPTED)
     @GetMapping("/{id}")
     @Operation(summary = "Get book by ID", description = "Get a book by ID")
@@ -63,6 +65,7 @@ public class BookController {
         return bookService.save(requestDto);
     }
 
+    @PreAuthorize("hasAnyRole('USER','ADMIN')")
     @ResponseStatus(HttpStatus.ACCEPTED)
     @GetMapping("/search")
     @Operation(summary = "Search for a book", description = "Find all books by given parameters")

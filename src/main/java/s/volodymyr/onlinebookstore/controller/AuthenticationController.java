@@ -4,7 +4,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,7 +17,6 @@ import s.volodymyr.onlinebookstore.security.AuthenticationService;
 import s.volodymyr.onlinebookstore.service.UserService;
 
 @Tag(name = "User management", description = "Endpoints for managing users")
-@Validated
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/auth")

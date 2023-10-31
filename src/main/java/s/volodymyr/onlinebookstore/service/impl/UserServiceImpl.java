@@ -1,6 +1,5 @@
 package s.volodymyr.onlinebookstore.service.impl;
 
-import java.util.HashSet;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -9,7 +8,6 @@ import s.volodymyr.onlinebookstore.dto.user.UserRegistrationRequestDto;
 import s.volodymyr.onlinebookstore.dto.user.UserResponseDto;
 import s.volodymyr.onlinebookstore.exception.RegistrationException;
 import s.volodymyr.onlinebookstore.mapper.UserMapper;
-import s.volodymyr.onlinebookstore.model.Role;
 import s.volodymyr.onlinebookstore.model.RoleName;
 import s.volodymyr.onlinebookstore.model.User;
 import s.volodymyr.onlinebookstore.repository.role.RoleRepository;
@@ -27,15 +25,12 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserResponseDto register(
             UserRegistrationRequestDto request) throws RegistrationException {
-        if (userRepository.findByEmail(request.email()).isPresent()) {
+        if (userRepository.existsByEmail(request.email())) {
             throw new RegistrationException("Unable to complete registration");
         }
         User user = userMapper.toUser(request);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-        Set<Role> roles = new HashSet<>();
-        roles.add(roleRepository.findByName(RoleName.ROLE_USER));
-        user.setRoles(roles);
+        user.setRoles(Set.of(roleRepository.findByName(RoleName.ROLE_USER)));
         return userMapper.toUserResponseDto(userRepository.save(user));
     }
-
 }
