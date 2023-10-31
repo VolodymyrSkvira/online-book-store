@@ -1,10 +1,12 @@
 package s.volodymyr.onlinebookstore.mapper;
 
+import org.mapstruct.AfterMapping;
 import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
 import org.mapstruct.MappingTarget;
 import org.mapstruct.NullValueCheckStrategy;
 import s.volodymyr.onlinebookstore.dto.book.BookDto;
+import s.volodymyr.onlinebookstore.dto.book.BookDtoWithoutCategoryIds;
 import s.volodymyr.onlinebookstore.dto.book.CreateBookRequestDto;
 import s.volodymyr.onlinebookstore.model.Book;
 
@@ -18,5 +20,11 @@ public interface BookMapper {
 
     Book toBook(CreateBookRequestDto requestDto);
 
+    BookDtoWithoutCategoryIds toDtoWithoutCategories(Book book);
+
     void updateBook(CreateBookRequestDto dto, @MappingTarget Book book);
+
+    @AfterMapping
+    default void setCategoryIds(@MappingTarget BookDto bookDto, Book book){
+    }
 }
