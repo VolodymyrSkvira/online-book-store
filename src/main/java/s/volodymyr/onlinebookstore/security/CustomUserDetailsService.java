@@ -10,7 +10,6 @@ import s.volodymyr.onlinebookstore.repository.user.UserRepository;
 
 @Service
 @RequiredArgsConstructor
-@Component
 public class CustomUserDetailsService implements UserDetailsService {
     private final UserRepository userRepository;
 
