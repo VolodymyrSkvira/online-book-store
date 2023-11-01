@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import s.volodymyr.onlinebookstore.dto.book.BookDtoWithoutCategoryIds;
 import s.volodymyr.onlinebookstore.dto.category.CategoryDto;
+import s.volodymyr.onlinebookstore.dto.category.CreateCategoryRequestDto;
 import s.volodymyr.onlinebookstore.service.BookService;
 import s.volodymyr.onlinebookstore.service.CategoryService;
 
@@ -47,7 +48,7 @@ public class CategoryController {
     @PostMapping
     @Operation(summary = "Create category",
                description = "Create a new category")
-    public CategoryDto createCategory(@RequestBody @Valid CategoryDto categoryDto) {
+    public CreateCategoryRequestDto createCategory(@RequestBody @Valid CategoryDto categoryDto) {
         return categoryService.save(categoryDto);
     }
 
@@ -65,7 +66,7 @@ public class CategoryController {
     @PutMapping("/{id}")
     @Operation(summary = "Update category",
                description = "Update a category by ID")
-    public CategoryDto updateCategory(@PathVariable @Positive Long id,
+    public CreateCategoryRequestDto updateCategory(@PathVariable @Positive Long id,
                                       @RequestBody @Valid CategoryDto categoryDto) {
         return categoryService.update(id, categoryDto);
     }

@@ -1,19 +1,22 @@
 package s.volodymyr.onlinebookstore.service.impl;
 
 import java.util.List;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import s.volodymyr.onlinebookstore.dto.category.CategoryDto;
+import s.volodymyr.onlinebookstore.dto.category.CreateCategoryRequestDto;
 import s.volodymyr.onlinebookstore.exception.EntityNotFoundException;
 import s.volodymyr.onlinebookstore.mapper.CategoryMapper;
 import s.volodymyr.onlinebookstore.model.Category;
 import s.volodymyr.onlinebookstore.repository.category.CategoryRepository;
 import s.volodymyr.onlinebookstore.service.CategoryService;
 
+@RequiredArgsConstructor
 @Service
 public class CategoryServiceImpl implements CategoryService {
-    private CategoryRepository categoryRepository;
-    private CategoryMapper categoryMapper;
+    private final CategoryRepository categoryRepository;
+    private final CategoryMapper categoryMapper;
 
     @Override
     public List<CategoryDto> findAll(Pageable pageable) {
@@ -30,18 +33,18 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public CategoryDto save(CategoryDto categoryRequest) {
+    public CreateCategoryRequestDto save(CategoryDto categoryRequest) {
         return categoryMapper
-                .toDto(categoryRepository.save(categoryMapper.toCategory(categoryRequest)));
+                .toRequestDto(categoryRepository.save(categoryMapper.toCategory(categoryRequest)));
     }
 
     @Override
-    public CategoryDto update(Long id, CategoryDto categoryDto) {
+    public CreateCategoryRequestDto update(Long id, CategoryDto categoryDto) {
         Category category = categoryRepository.getCategoryById(id).orElseThrow(
                 () -> new EntityNotFoundException("Can`t find category by id " + id)
         );
         categoryMapper.updateCategory(categoryDto, category);
-        return categoryMapper.toDto(categoryRepository.save(category));
+        return categoryMapper.toRequestDto(categoryRepository.save(category));
     }
 
     @Override
