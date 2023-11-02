@@ -16,9 +16,7 @@ import s.volodymyr.onlinebookstore.model.Category;
 public interface CategoryMapper {
     CategoryDto toDto(Category category);
 
-    Category toCategory(CategoryDto categoryDto);
+    Category toCategory(CreateCategoryRequestDto categoryDto);
 
-    CreateCategoryRequestDto toRequestDto(Category category);
-
-    void updateCategory(CategoryDto categoryDto, @MappingTarget Category category);
+    void updateCategory(CreateCategoryRequestDto categoryDto, @MappingTarget Category category);
 }

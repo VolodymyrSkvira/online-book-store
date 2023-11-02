@@ -10,9 +10,9 @@ public interface CategoryService {
 
     CategoryDto getCategoryById(Long id);
 
-    CreateCategoryRequestDto save(CategoryDto categoryDto);
+    CategoryDto save(CreateCategoryRequestDto categoryDto);
 
-    CreateCategoryRequestDto update(Long id, CategoryDto categoryDto);
+    CategoryDto update(Long id, CreateCategoryRequestDto categoryDto);
 
     void deleteById(Long id);
 }

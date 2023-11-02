@@ -6,5 +6,3 @@ public record CategoryDto(
         String description
 ) {
 }
-
-

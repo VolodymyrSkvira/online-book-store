@@ -48,8 +48,8 @@ public class CategoryController {
     @PostMapping
     @Operation(summary = "Create category",
                description = "Create a new category")
-    public CreateCategoryRequestDto createCategory(@RequestBody @Valid CategoryDto categoryDto) {
-        return categoryService.save(categoryDto);
+    public CategoryDto createCategory(@RequestBody @Valid CreateCategoryRequestDto requestDto) {
+        return categoryService.save(requestDto);
     }
 
     @PreAuthorize("hasAnyRole('USER','ADMIN')")
@@ -62,13 +62,13 @@ public class CategoryController {
     }
 
     @PreAuthorize("hasRole('ADMIN')")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @ResponseStatus(HttpStatus.OK)
     @PutMapping("/{id}")
     @Operation(summary = "Update category",
                description = "Update a category by ID")
-    public CreateCategoryRequestDto updateCategory(@PathVariable @Positive Long id,
-                                      @RequestBody @Valid CategoryDto categoryDto) {
-        return categoryService.update(id, categoryDto);
+    public CategoryDto updateCategory(@PathVariable @Positive Long id,
+                                      @RequestBody @Valid CreateCategoryRequestDto requestDto) {
+        return categoryService.update(id, requestDto);
     }
 
     @PreAuthorize("hasRole('ADMIN')")

@@ -1,5 +1,6 @@
 package s.volodymyr.onlinebookstore.mapper;
 
+import java.util.stream.Collectors;
 import org.mapstruct.AfterMapping;
 import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
@@ -9,6 +10,7 @@ import s.volodymyr.onlinebookstore.dto.book.BookDto;
 import s.volodymyr.onlinebookstore.dto.book.BookDtoWithoutCategoryIds;
 import s.volodymyr.onlinebookstore.dto.book.CreateBookRequestDto;
 import s.volodymyr.onlinebookstore.model.Book;
+import s.volodymyr.onlinebookstore.model.Category;
 
 @Mapper(componentModel = "spring",
         injectionStrategy = InjectionStrategy.CONSTRUCTOR,
@@ -25,6 +27,18 @@ public interface BookMapper {
     void updateBook(CreateBookRequestDto dto, @MappingTarget Book book);
 
     @AfterMapping
-    default void setCategoryIds(@MappingTarget BookDto bookDto, Book book){
+    default void setCategoryIds(@MappingTarget BookDto bookDto, Book book) {
+        bookDto.setCategoriesIds(book.getCategories()
+                .stream()
+                .map(Category::getId)
+                .toList());
+
+    }
+
+    @AfterMapping
+    default void setCategories(@MappingTarget Book book, CreateBookRequestDto bookDto) {
+        book.setCategories(bookDto.categoryIds().stream()
+                .map(Category::new)
+                .collect(Collectors.toSet()));
     }
 }
