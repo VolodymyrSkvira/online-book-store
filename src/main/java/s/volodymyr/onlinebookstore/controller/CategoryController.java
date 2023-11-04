@@ -10,6 +10,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -28,18 +29,18 @@ import s.volodymyr.onlinebookstore.service.CategoryService;
 @Tag(name = "Category management", description = "Endpoints for managing categories")
 @RequiredArgsConstructor
 @RestController
+@Validated
 @RequestMapping("/categories")
 public class CategoryController {
     private final CategoryService categoryService;
     private final BookService bookService;
 
-    @PreAuthorize("hasAnyRole('USER','ADMIN')")
+    @PreAuthorize("hasAnyRole('USER')")
     @ResponseStatus(HttpStatus.OK)
     @GetMapping
     @Operation(summary = "Get all categories",
                description = "Receive a list of available categories")
-    public List<CategoryDto> getAll(
-            @PageableDefault(size = 5) Pageable pageable) {
+    public List<CategoryDto> getAll(@PageableDefault(size = 5) Pageable pageable) {
         return categoryService.findAll(pageable);
     }
 
@@ -52,7 +53,7 @@ public class CategoryController {
         return categoryService.save(requestDto);
     }
 
-    @PreAuthorize("hasAnyRole('USER','ADMIN')")
+    @PreAuthorize("hasAnyRole('USER')")
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/{id}")
     @Operation(summary = "Get category by ID",
@@ -80,15 +81,14 @@ public class CategoryController {
         categoryService.deleteById(id);
     }
 
-    @PreAuthorize("hasAnyRole('USER','ADMIN')")
+    @PreAuthorize("hasAnyRole('USER')")
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/{id}/books")
     @Operation(summary = "Get book by category id",
                description = "Receive a list of books by category id")
-    public List<BookDtoWithoutCategoryIds> getBooksByCategoryId(
-            @PathVariable @Positive Long id,
-            @PageableDefault(size = 5) Pageable pageable
-    ) {
+    public List<BookDtoWithoutCategoryIds> getBooksByCategoryId(@PathVariable @Positive Long id,
+                                                                @PageableDefault(size = 5)
+                                                                Pageable pageable) {
         return bookService.getBooksByCategoryId(id, pageable);
     }
 }
