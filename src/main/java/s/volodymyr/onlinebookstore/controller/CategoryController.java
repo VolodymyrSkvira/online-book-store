@@ -35,7 +35,7 @@ public class CategoryController {
     private final CategoryService categoryService;
     private final BookService bookService;
 
-    @PreAuthorize("hasAnyRole('USER')")
+    @PreAuthorize("hasRole('USER')")
     @ResponseStatus(HttpStatus.OK)
     @GetMapping
     @Operation(summary = "Get all categories",
@@ -53,7 +53,7 @@ public class CategoryController {
         return categoryService.save(requestDto);
     }
 
-    @PreAuthorize("hasAnyRole('USER')")
+    @PreAuthorize("hasRole('USER')")
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/{id}")
     @Operation(summary = "Get category by ID",
@@ -81,7 +81,7 @@ public class CategoryController {
         categoryService.deleteById(id);
     }
 
-    @PreAuthorize("hasAnyRole('USER')")
+    @PreAuthorize("hasRole('USER')")
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("/{id}/books")
     @Operation(summary = "Get book by category id",

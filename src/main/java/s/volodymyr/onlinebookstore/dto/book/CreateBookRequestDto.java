@@ -27,6 +27,5 @@ public record CreateBookRequestDto(
         String description,
         String coverImage,
         @NotEmpty
-        List<@Positive Long> categoryIds
-) {
+        List<@Positive Long> categoryIds) {
 }
