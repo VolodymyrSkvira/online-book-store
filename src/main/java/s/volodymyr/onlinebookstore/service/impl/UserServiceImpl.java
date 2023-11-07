@@ -9,6 +9,7 @@ import s.volodymyr.onlinebookstore.dto.user.UserResponseDto;
 import s.volodymyr.onlinebookstore.exception.RegistrationException;
 import s.volodymyr.onlinebookstore.mapper.UserMapper;
 import s.volodymyr.onlinebookstore.model.RoleName;
+import s.volodymyr.onlinebookstore.model.ShoppingCart;
 import s.volodymyr.onlinebookstore.model.User;
 import s.volodymyr.onlinebookstore.repository.role.RoleRepository;
 import s.volodymyr.onlinebookstore.repository.user.UserRepository;
@@ -29,8 +30,14 @@ public class UserServiceImpl implements UserService {
             throw new RegistrationException("Unable to complete registration");
         }
         User user = userMapper.toUser(request);
+        setShoppingCartForUser(user);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setRoles(Set.of(roleRepository.findByName(RoleName.ROLE_USER)));
         return userMapper.toUserResponseDto(userRepository.save(user));
+    }
+
+    private void setShoppingCartForUser(User user) {
+        ShoppingCart shoppingCart = new ShoppingCart();
+        shoppingCart.setUser(user);
     }
 }
