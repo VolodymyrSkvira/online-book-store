@@ -8,4 +8,6 @@ import s.volodymyr.onlinebookstore.model.CartItem;
 @Repository
 public interface CartItemRepository extends JpaRepository<CartItem, Long> {
     Optional<CartItem> findByIdAndShoppingCartId(Long cartItemId, Long shoppingCartId);
+
+    void deleteByShoppingCartId(Long id);
 }
