@@ -2,6 +2,7 @@ package s.volodymyr.onlinebookstore.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.constraints.Positive;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -55,7 +56,7 @@ public class OrderController {
     @Operation(summary = "Update order",
             description = "Update the status of an existing order")
     public OrderDto updateOrder(@RequestBody UpdateOrderStatusDto updateDto,
-                                @PathVariable Long id) {
+                                @PathVariable @Positive Long id) {
         return orderService.update(id, updateDto);
     }
 
@@ -63,7 +64,8 @@ public class OrderController {
     @GetMapping("/{id}/items")
     @Operation(summary = "Get order items by order id",
             description = "Receive order items by order id")
-    public List<OrderItemDto> getItemsByOrderId(Pageable pageable, @PathVariable Long id) {
+    public List<OrderItemDto> getItemsByOrderId(Pageable pageable,
+                                                @PathVariable @Positive Long id) {
         return orderService.getItemsByOrderId(pageable, id);
     }
 
@@ -71,8 +73,8 @@ public class OrderController {
     @GetMapping("/{orderId}/items/{itemId}")
     @Operation(summary = "Get order item by order id and item id",
             description = "Receive order item by order id and item id")
-    public OrderItemDto getItemByOrderAndItemId(@PathVariable Long orderId,
-                                                @PathVariable Long itemId) {
+    public OrderItemDto getItemByOrderAndItemId(@PathVariable @Positive Long orderId,
+                                                @PathVariable @Positive Long itemId) {
         return orderService.getItemByOrderIdAndItemId(orderId, itemId);
     }
 }

@@ -1,10 +1,6 @@
 package s.volodymyr.onlinebookstore.service.impl;
 
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -16,12 +12,9 @@ import s.volodymyr.onlinebookstore.dto.orderitem.OrderItemDto;
 import s.volodymyr.onlinebookstore.exception.EntityNotFoundException;
 import s.volodymyr.onlinebookstore.mapper.OrderItemMapper;
 import s.volodymyr.onlinebookstore.mapper.OrderMapper;
-import s.volodymyr.onlinebookstore.model.CartItem;
 import s.volodymyr.onlinebookstore.model.Order;
 import s.volodymyr.onlinebookstore.model.OrderItem;
 import s.volodymyr.onlinebookstore.model.ShoppingCart;
-import s.volodymyr.onlinebookstore.model.Status;
-import s.volodymyr.onlinebookstore.model.User;
 import s.volodymyr.onlinebookstore.repository.cartitem.CartItemRepository;
 import s.volodymyr.onlinebookstore.repository.order.OrderRepository;
 import s.volodymyr.onlinebookstore.repository.orderitem.OrderItemRepository;
@@ -40,7 +33,6 @@ public class OrderServiceImpl implements OrderService {
     private final OrderItemRepository orderItemRepository;
     private final CartItemRepository cartItemRepository;
 
-    @Transactional
     @Override
     public List<OrderDto> getAllById(Pageable pageable, Long id) {
         return orderRepository.findAllByUserId(pageable, id).stream()
@@ -51,20 +43,12 @@ public class OrderServiceImpl implements OrderService {
     @Transactional
     @Override
     public OrderDto createOrder(Long id, CreateOrderRequestDto requestDto) {
-        User user = userRepository.findById(id).orElseThrow(
-                () -> new EntityNotFoundException("Cannot find user")
-        );
         ShoppingCart shoppingCart = shoppingCartRepository.findById(id).orElseThrow(
                 () -> new EntityNotFoundException("Shopping cart is empty")
         );
-        Order order = createOrderObject(shoppingCart.getCartItems());
-        order.setUser(user);
-        order.setShippingAddress(requestDto.shippingAddress());
-        order.setOrderDate(LocalDateTime.now());
-        order.setStatus(Status.NEW);
-        order.setTotal(getTotal(order.getOrderItems()));
+        Order order = orderMapper.toOrder(shoppingCart, requestDto);
         orderRepository.save(order);
-        cartItemRepository.deleteByShoppingCartId(shoppingCart.getId());
+        shoppingCart.clear();
         return orderMapper.toDto(order);
     }
 
@@ -76,7 +60,6 @@ public class OrderServiceImpl implements OrderService {
                 () -> new EntityNotFoundException("Cannot find order by id " + orderId)
         );
         order.setStatus(updateDto.status());
-        orderRepository.save(order);
         return orderMapper.toDto(order);
     }
 
@@ -99,27 +82,5 @@ public class OrderServiceImpl implements OrderService {
                                 + orderId)
                 );
         return orderItemMapper.toDto(orderItem);
-    }
-
-    private Order createOrderObject(Set<CartItem> cartItems) {
-        Order order = new Order();
-        Set<OrderItem> orderItems = new HashSet<>();
-        OrderItem orderItem = new OrderItem();
-        for (CartItem item : cartItems) {
-            orderItem.setBook(item.getBook());
-            orderItem.setQuantity(item.getQuantity());
-            orderItem.setPrice(item.getBook().getPrice().multiply(
-                    BigDecimal.valueOf(item.getQuantity())));
-            orderItem.setOrder(order);
-            orderItems.add(orderItem);
-        }
-        order.setOrderItems(orderItems);
-        return order;
-    }
-
-    private BigDecimal getTotal(Set<OrderItem> orderItems) {
-        return orderItems.stream()
-                .map(OrderItem::getPrice)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 }

@@ -47,8 +47,11 @@ public class Book {
     @Column(nullable = false)
     private boolean isDeleted = false;
 
-    @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "book")
+    @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "book", orphanRemoval = true)
     private Set<CartItem> cartItems = new HashSet<>();
+
+    @OneToMany(cascade = CascadeType.REMOVE, mappedBy = "book", orphanRemoval = true)
+    private Set<OrderItem> orderItems = new HashSet<>();
 
     @ManyToMany
     @JoinTable(name = "books_categories",

@@ -5,6 +5,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.NullValueCheckStrategy;
 import s.volodymyr.onlinebookstore.dto.orderitem.OrderItemDto;
+import s.volodymyr.onlinebookstore.model.CartItem;
 import s.volodymyr.onlinebookstore.model.OrderItem;
 
 @Mapper(componentModel = "spring",
@@ -15,4 +16,8 @@ import s.volodymyr.onlinebookstore.model.OrderItem;
 public interface OrderItemMapper {
     @Mapping(source = "book.id", target = "bookId")
     OrderItemDto toDto(OrderItem orderItem);
+
+    @Mapping(target = "price", source = "book.price")
+    @Mapping(target = "id", ignore = true)
+    OrderItem toOrderItem(CartItem cartItem);
 }
