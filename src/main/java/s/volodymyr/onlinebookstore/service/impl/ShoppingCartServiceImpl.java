@@ -1,6 +1,5 @@
 package s.volodymyr.onlinebookstore.service.impl;
 
-import java.util.HashSet;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,7 +27,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     private final BookRepository bookRepository;
     private final CartItemRepository cartItemRepository;
 
-    @Transactional
+    @Transactional(readOnly = true)
     @Override
     public ShoppingCartDto findById(Long id) {
         return shoppingCartMapper.toDto(shoppingCartRepository.findById(id).orElseThrow(
@@ -38,17 +37,12 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
 
     @Transactional
     @Override
-    public ShoppingCartDto addToCart(Long id, CreateCartItemRequestDto requestDto) {
-        User user = userRepository.findById(id).orElseThrow(
+    public ShoppingCartDto addToCart(Long userId, CreateCartItemRequestDto requestDto) {
+        User user = userRepository.findById(userId).orElseThrow(
                 () -> new EntityNotFoundException("Cannot find user")
         );
-        ShoppingCart shoppingCart = shoppingCartRepository.findById(id).orElseGet(
-                () -> {
-                    ShoppingCart newShoppingCart = new ShoppingCart();
-                    newShoppingCart.setUser(user);
-                    newShoppingCart.setCartItems(new HashSet<>());
-                    return shoppingCartRepository.save(newShoppingCart);
-                }
+        ShoppingCart shoppingCart = shoppingCartRepository.findById(userId).orElseGet(
+                () -> createShoppingCartForUser(user)
         );
         Book book = bookRepository.getBookById(requestDto.bookId()).orElseThrow(
                 () -> new EntityNotFoundException("Cannot find book")
@@ -96,5 +90,11 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
         cartItemRepository.delete(cartItem);
         shoppingCart.removeCartItem(cartItem);
         return shoppingCartMapper.toDto(shoppingCart);
+    }
+
+    private ShoppingCart createShoppingCartForUser(User user) {
+        ShoppingCart newShoppingCart = new ShoppingCart();
+        newShoppingCart.setUser(user);
+        return shoppingCartRepository.save(newShoppingCart);
     }
 }

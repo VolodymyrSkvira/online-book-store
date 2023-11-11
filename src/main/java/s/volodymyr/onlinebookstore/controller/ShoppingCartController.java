@@ -2,6 +2,7 @@ package s.volodymyr.onlinebookstore.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -55,7 +56,7 @@ public class ShoppingCartController {
     @Operation(summary = "Update cart item",
             description = "Update cart item by given id")
     public ShoppingCartDto updateCartItem(Authentication authentication,
-                                          @PathVariable Long id,
+                                          @PathVariable @Positive Long id,
                                           @RequestBody ChangeShoppingCartQuantityDto quantityDto) {
         User user = (User) authentication.getPrincipal();
         return shoppingCartService.update(user.getId(), id, quantityDto);
@@ -66,7 +67,8 @@ public class ShoppingCartController {
     @DeleteMapping(("/cart-items/{id}"))
     @Operation(summary = "Delete cart item",
             description = "Delete cart item by given id")
-    public ShoppingCartDto deleteCartItem(Authentication authentication, @PathVariable Long id) {
+    public ShoppingCartDto deleteCartItem(Authentication authentication,
+                                          @PathVariable @Positive Long id) {
         User user = (User) authentication.getPrincipal();
         return shoppingCartService.removeCartItem(user.getId(), id);
     }
