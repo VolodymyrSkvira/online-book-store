@@ -68,7 +68,6 @@ public class OrderServiceImpl implements OrderService {
         return orderItemRepository.findAllByOrderId(pageable, orderId).stream()
                 .map(orderItemMapper::toDto)
                 .toList();
-
     }
 
     @Override

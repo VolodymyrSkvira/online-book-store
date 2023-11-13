@@ -2,10 +2,12 @@ package s.volodymyr.onlinebookstore.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.validation.annotation.Validated;
@@ -36,7 +38,7 @@ public class OrderController {
     @Operation(summary = "Get orders",
             description = "Receive user's order history")
     public List<OrderDto> getOrders(Authentication authentication,
-                                    Pageable pageable) {
+                                    @PageableDefault Pageable pageable) {
         User user = (User) authentication.getPrincipal();
         return orderService.getAllById(pageable, user.getId());
     }
@@ -46,7 +48,7 @@ public class OrderController {
     @Operation(summary = "Place order",
             description = "Allows user to place an order")
     public OrderDto placeOrder(Authentication authentication,
-                               @RequestBody CreateOrderRequestDto requestDto) {
+                               @RequestBody @Valid CreateOrderRequestDto requestDto) {
         User user = (User) authentication.getPrincipal();
         return orderService.createOrder(user.getId(), requestDto);
     }
@@ -55,7 +57,7 @@ public class OrderController {
     @PatchMapping("/{id}")
     @Operation(summary = "Update order",
             description = "Update the status of an existing order")
-    public OrderDto updateOrder(@RequestBody UpdateOrderStatusDto updateDto,
+    public OrderDto updateOrder(@RequestBody @Valid UpdateOrderStatusDto updateDto,
                                 @PathVariable @Positive Long id) {
         return orderService.update(id, updateDto);
     }
@@ -64,7 +66,7 @@ public class OrderController {
     @GetMapping("/{id}/items")
     @Operation(summary = "Get order items by order id",
             description = "Receive order items by order id")
-    public List<OrderItemDto> getItemsByOrderId(Pageable pageable,
+    public List<OrderItemDto> getItemsByOrderId(@PageableDefault Pageable pageable,
                                                 @PathVariable @Positive Long id) {
         return orderService.getItemsByOrderId(pageable, id);
     }
