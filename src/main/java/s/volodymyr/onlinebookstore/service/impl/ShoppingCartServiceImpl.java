@@ -4,8 +4,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import s.volodymyr.onlinebookstore.dto.cartitem.CreateCartItemRequestDto;
-import s.volodymyr.onlinebookstore.dto.shoppingcart.ChangeShoppingCartQuantityDto;
 import s.volodymyr.onlinebookstore.dto.shoppingcart.ShoppingCartDto;
+import s.volodymyr.onlinebookstore.dto.shoppingcart.UpdateCartItemRequestDto;
 import s.volodymyr.onlinebookstore.exception.EntityNotFoundException;
 import s.volodymyr.onlinebookstore.mapper.ShoppingCartMapper;
 import s.volodymyr.onlinebookstore.model.Book;
@@ -31,7 +31,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     @Override
     public ShoppingCartDto findById(Long id) {
         return shoppingCartMapper.toDto(shoppingCartRepository.findById(id).orElseThrow(
-                () -> new RuntimeException("Cannot find shopping cart")
+                () -> new EntityNotFoundException("Cannot find shopping cart")
         ));
     }
 
@@ -60,7 +60,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     @Override
     public ShoppingCartDto update(Long userId,
                                   Long cartItemId,
-                                  ChangeShoppingCartQuantityDto quantityDto) {
+                                  UpdateCartItemRequestDto quantityDto) {
         ShoppingCart shoppingCart = shoppingCartRepository.findByUserId(userId)
                 .orElseThrow(() -> new EntityNotFoundException(
                         "Can't find shopping cart by id " + userId)
