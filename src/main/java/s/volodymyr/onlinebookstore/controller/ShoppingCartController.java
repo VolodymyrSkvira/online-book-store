@@ -2,6 +2,7 @@ package s.volodymyr.onlinebookstore.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -18,8 +19,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import s.volodymyr.onlinebookstore.dto.cartitem.CreateCartItemRequestDto;
-import s.volodymyr.onlinebookstore.dto.shoppingcart.ChangeShoppingCartQuantityDto;
 import s.volodymyr.onlinebookstore.dto.shoppingcart.ShoppingCartDto;
+import s.volodymyr.onlinebookstore.dto.shoppingcart.UpdateCartItemRequestDto;
 import s.volodymyr.onlinebookstore.model.User;
 import s.volodymyr.onlinebookstore.service.ShoppingCartService;
 
@@ -46,7 +47,7 @@ public class ShoppingCartController {
     @Operation(summary = "Add book to cart",
             description = "Add book to current user's shopping cart")
     public ShoppingCartDto addBookToCart(Authentication authentication,
-                                         @RequestBody CreateCartItemRequestDto requestDto) {
+                                         @RequestBody @Valid CreateCartItemRequestDto requestDto) {
         User user = (User) authentication.getPrincipal();
         return shoppingCartService.addToCart(user.getId(), requestDto);
     }
@@ -56,8 +57,10 @@ public class ShoppingCartController {
     @Operation(summary = "Update cart item",
             description = "Update cart item by given id")
     public ShoppingCartDto updateCartItem(Authentication authentication,
-                                          @PathVariable @Positive Long id,
-                                          @RequestBody ChangeShoppingCartQuantityDto quantityDto) {
+                                          @PathVariable @Positive
+                                          Long id,
+                                          @RequestBody @Valid
+                                          UpdateCartItemRequestDto quantityDto) {
         User user = (User) authentication.getPrincipal();
         return shoppingCartService.update(user.getId(), id, quantityDto);
     }

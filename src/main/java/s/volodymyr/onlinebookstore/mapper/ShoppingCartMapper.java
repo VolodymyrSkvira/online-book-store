@@ -5,8 +5,8 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.NullValueCheckStrategy;
 import s.volodymyr.onlinebookstore.dto.cartitem.CreateCartItemRequestDto;
-import s.volodymyr.onlinebookstore.dto.shoppingcart.ChangeShoppingCartQuantityDto;
 import s.volodymyr.onlinebookstore.dto.shoppingcart.ShoppingCartDto;
+import s.volodymyr.onlinebookstore.dto.shoppingcart.UpdateCartItemRequestDto;
 import s.volodymyr.onlinebookstore.model.ShoppingCart;
 
 @Mapper(componentModel = "spring",
@@ -22,5 +22,5 @@ public interface ShoppingCartMapper {
 
     ShoppingCartDto toSaveResponseDto(CreateCartItemRequestDto requestDto);
 
-    ShoppingCartDto toUpdateResponseDto(ChangeShoppingCartQuantityDto requestDto);
+    ShoppingCartDto toUpdateResponseDto(UpdateCartItemRequestDto requestDto);
 }
