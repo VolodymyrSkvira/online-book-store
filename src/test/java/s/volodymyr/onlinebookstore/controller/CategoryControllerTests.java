@@ -171,7 +171,7 @@ public class CategoryControllerTests {
     @Test
     @DisplayName("""
             """)
-    void deleteCategory_WithValidData_ShouldDoNothing() throws Exception{
+    void deleteCategory_WithValidData_ShouldDoNothing() throws Exception {
         MvcResult result = mockMvc.perform(
                         delete("/categories/1")
                                 .contentType(MediaType.APPLICATION_JSON)

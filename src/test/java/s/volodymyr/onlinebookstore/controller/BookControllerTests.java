@@ -11,7 +11,6 @@ import static s.volodymyr.onlinebookstore.util.UtilBookDataSupplier.createTestLi
 import static s.volodymyr.onlinebookstore.util.UtilBookDataSupplier.getDefaultCreateBookRequestDto;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.data.domain.Pageable;
 import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -185,7 +184,7 @@ public class BookControllerTests {
     @Test
     @DisplayName("""
             """)
-    void delete_WithValidData_ShouldDoNothing() throws Exception{
+    void delete_WithValidData_ShouldDoNothing() throws Exception {
         MvcResult result = mockMvc.perform(
                         delete("/books/1")
                                 .contentType(MediaType.APPLICATION_JSON)
