@@ -9,7 +9,6 @@ import static org.mockito.Mockito.when;
 import static s.volodymyr.onlinebookstore.util.UtilBookDataSupplier.getDefaultCreateBookRequestDto;
 
 import java.math.BigDecimal;
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import org.junit.jupiter.api.DisplayName;
@@ -41,8 +40,7 @@ public class BookServiceTests {
     private BookMapper bookMapper = new BookMapperImpl();
 
     @Test
-    @DisplayName("""
-            """)
+    @DisplayName("Create a book with valid data")
     public void save_WithValidData_ShouldReturnBookDto() {
         Long id = 1L;
         CreateBookRequestDto requestDto = getDefaultCreateBookRequestDto();
@@ -56,27 +54,21 @@ public class BookServiceTests {
         book.setCoverImage(requestDto.coverImage());
         book.setCategories(Set.of(new Category(id)));
 
-        BookDto bookDto = new BookDto(id,
-                book.getTitle(),
-                book.getAuthor(),
-                book.getIsbn(),
-                book.getPrice(),
-                book.getDescription(),
-                book.getCoverImage(),
-                List.of(id));
-
         when(bookMapper.toBook(requestDto)).thenReturn(book);
         when(bookRepository.save(book)).thenReturn(book);
-        when(bookMapper.toDto(book)).thenReturn(bookDto);
 
         BookDto actual = bookService.save(requestDto);
 
-        assertEquals(actual, bookDto);
+        assertThat(actual).hasFieldOrPropertyWithValue("title", requestDto.title())
+                .hasFieldOrPropertyWithValue("author", requestDto.author())
+                .hasFieldOrPropertyWithValue("isbn", requestDto.isbn())
+                .hasFieldOrPropertyWithValue("price", requestDto.price())
+                .hasFieldOrPropertyWithValue("description", requestDto.description())
+                .hasFieldOrPropertyWithValue("coverImage", requestDto.coverImage());
     }
 
     @Test
-    @DisplayName("""
-            """)
+    @DisplayName("Receive a book by a valid id")
     public void getBookById_WithValidData_ShouldReturnBookDto() {
         Long id = 1L;
 
@@ -89,26 +81,20 @@ public class BookServiceTests {
         book.setCoverImage("image_1");
         book.setCategories(Set.of(new Category(id)));
 
-        BookDto bookDto = new BookDto(id,
-                book.getTitle(),
-                book.getAuthor(),
-                book.getIsbn(),
-                book.getPrice(),
-                book.getDescription(),
-                book.getCoverImage(),
-                List.of(id));
-
         when(bookRepository.getBookById(id)).thenReturn(Optional.of(book));
-        when(bookMapper.toDto(book)).thenReturn(bookDto);
 
         BookDto actual = bookService.getBookById(id);
 
-        assertEquals(actual, bookDto);
+        assertThat(actual).hasFieldOrPropertyWithValue("title", book.getTitle())
+                .hasFieldOrPropertyWithValue("author", book.getAuthor())
+                .hasFieldOrPropertyWithValue("isbn", book.getIsbn())
+                .hasFieldOrPropertyWithValue("price", book.getPrice())
+                .hasFieldOrPropertyWithValue("description", book.getDescription())
+                .hasFieldOrPropertyWithValue("coverImage", book.getCoverImage());
     }
 
     @Test
-    @DisplayName("""
-            """)
+    @DisplayName("Receive a book by non-valid id")
     public void getBookById_WithInvalidData_ShouldThrowException() {
         Long id = 1L;
 
@@ -125,8 +111,7 @@ public class BookServiceTests {
     }
 
     @Test
-    @DisplayName("""
-            """)
+    @DisplayName("Update a book by a valid id")
     public void update_WithValidData_ShouldReturnBookDto() {
         Long id = 1L;
 
@@ -147,12 +132,15 @@ public class BookServiceTests {
         BookDto updated = bookService.update(requestDto, id);
 
         assertThat(updated).hasFieldOrPropertyWithValue("title", requestDto.title())
-                .hasFieldOrPropertyWithValue("author", requestDto.author());
+                .hasFieldOrPropertyWithValue("author", requestDto.author())
+                .hasFieldOrPropertyWithValue("isbn", requestDto.isbn())
+                .hasFieldOrPropertyWithValue("price", requestDto.price())
+                .hasFieldOrPropertyWithValue("description", requestDto.description())
+                .hasFieldOrPropertyWithValue("coverImage", requestDto.coverImage());
     }
 
     @Test
-    @DisplayName("""
-            """)
+    @DisplayName("Receive a book by a non-valid id")
     public void update_WithInvalidData_ShouldThrowException() {
         Long id = 1L;
 
@@ -171,8 +159,7 @@ public class BookServiceTests {
     }
 
     @Test
-    @DisplayName("""
-            """)
+    @DisplayName("Delete a book by a valid id")
     public void deleteById_WithValidData_ShouldDoNothing() {
         Long id = 1L;
 

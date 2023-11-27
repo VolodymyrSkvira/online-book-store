@@ -9,31 +9,27 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.List;
 import javax.sql.DataSource;
-import lombok.SneakyThrows;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.MediaType;
-import org.springframework.jdbc.datasource.init.ScriptUtils;
 import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
-import org.testcontainers.shaded.org.apache.commons.lang3.builder.EqualsBuilder;
 import s.volodymyr.onlinebookstore.dto.category.CategoryDto;
 import s.volodymyr.onlinebookstore.dto.category.CreateCategoryRequestDto;
 
+@Sql(scripts = "classpath:database/categories/add-three-default-categories.sql")
+@Sql(scripts = "classpath:database/categories/delete-all-from-categories.sql",
+        executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class CategoryControllerTests {
     protected static MockMvc mockMvc;
@@ -43,67 +39,23 @@ public class CategoryControllerTests {
     @BeforeAll
     static void beforeAll(
             @Autowired DataSource dataSource,
-            @Autowired WebApplicationContext applicationContext
-    ) throws SQLException {
+            @Autowired WebApplicationContext applicationContext) {
         mockMvc = MockMvcBuilders
                 .webAppContextSetup(applicationContext)
                 .apply(springSecurity())
                 .build();
-        teardown(dataSource);
-        try (Connection connection = dataSource.getConnection()) {
-            connection.setAutoCommit(true);
-            ScriptUtils.executeSqlScript(
-                    connection,
-                    new ClassPathResource("database/categories/add-three-default-categories.sql")
-            );
-        }
-    }
-
-    @AfterEach
-    void afterEach(
-            @Autowired DataSource dataSource
-    ) throws SQLException {
-        teardown(dataSource);
-        try (Connection connection = dataSource.getConnection()) {
-            connection.setAutoCommit(true);
-            ScriptUtils.executeSqlScript(
-                    connection,
-                    new ClassPathResource("database/categories/add-three-default-categories.sql")
-            );
-        }
-    }
-
-    @AfterAll
-    static void afterAll(
-            @Autowired DataSource dataSource
-    ) {
-        teardown(dataSource);
-    }
-
-    @SneakyThrows
-    static void teardown(DataSource dataSource) {
-        try (Connection connection = dataSource.getConnection()) {
-            connection.setAutoCommit(true);
-            ScriptUtils.executeSqlScript(
-                    connection,
-                    new ClassPathResource(
-                            "database/categories/delete-all-from-categories.sql"
-                    )
-            );
-        }
     }
 
     @WithMockUser(username = "admin", roles = {"ADMIN"})
     @Test
-    @DisplayName("""
-            """)
+    @DisplayName("Create a category with valid data")
     void createCategory_ValidRequestDto_ShouldReturnCategoryDto() throws Exception {
-        Long id = 1L;
+        Long id = 4L;
 
         CreateCategoryRequestDto requestDto = new CreateCategoryRequestDto("Fiction",
                                                                            "Awesome category");
 
-        CategoryDto expected = new CategoryDto(null, "Fiction", "Awesome category");
+        CategoryDto expected = new CategoryDto(id, "Fiction", "Awesome category");
 
         String jsonRequest = objectMapper.writeValueAsString(requestDto);
 
@@ -117,13 +69,12 @@ public class CategoryControllerTests {
 
         CategoryDto actual = objectMapper.readValue(result.getResponse().getContentAsString(),
                 CategoryDto.class);
-        EqualsBuilder.reflectionEquals(expected, actual, "id");
+        assertEquals(expected, actual);
     }
 
     @WithMockUser(username = "user", roles = {"USER"})
     @Test
-    @DisplayName("""
-            """)
+    @DisplayName("Receive all available categories")
     void getAll_WithCategoriesInDb_ShouldReturnAllCategories() throws Exception {
         List<CategoryDto> expected = List.of(new CategoryDto(1L,
                                                              "First category",
@@ -150,10 +101,11 @@ public class CategoryControllerTests {
 
     @WithMockUser(username = "user", roles = {"USER"})
     @Test
-    @DisplayName("""
-            """)
+    @DisplayName("Receive a category by a valid id")
     void getCategoryById_WithCategoriesInDb_ShouldReturnCategoryDto() throws Exception {
-        CategoryDto expected = new CategoryDto(null, "First category", "First description");
+        Long id = 1L;
+
+        CategoryDto expected = new CategoryDto(id, "First category", "First description");
 
         MvcResult result = mockMvc.perform(
                         get("/categories/1")
@@ -164,13 +116,12 @@ public class CategoryControllerTests {
 
         CategoryDto actual = objectMapper.readValue(result.getResponse().getContentAsString(),
                 CategoryDto.class);
-        EqualsBuilder.reflectionEquals(expected, actual, "id");
+        assertEquals(expected, actual);
     }
 
     @WithMockUser(username = "admin", roles = {"ADMIN"})
     @Test
-    @DisplayName("""
-            """)
+    @DisplayName("Delete a category with valid id")
     void deleteCategory_WithValidData_ShouldDoNothing() throws Exception {
         MvcResult result = mockMvc.perform(
                         delete("/categories/1")
@@ -182,15 +133,14 @@ public class CategoryControllerTests {
 
     @WithMockUser(username = "admin", roles = {"ADMIN"})
     @Test
-    @DisplayName("""
-            """)
+    @DisplayName("Update a category with valid id")
     void updateCategory_withValidData_ShouldReturnCategoryDto() throws Exception {
         Long id = 1L;
 
         CreateCategoryRequestDto requestDto = new CreateCategoryRequestDto("Fiction",
                                                                            "Awesome category");
 
-        CategoryDto expected = new CategoryDto(null, "Fiction", "Awesome category");
+        CategoryDto expected = new CategoryDto(id, "Fiction", "Awesome category");
 
         String jsonRequest = objectMapper.writeValueAsString(requestDto);
 
@@ -205,6 +155,6 @@ public class CategoryControllerTests {
         CategoryDto actual = objectMapper.readValue(result.getResponse().getContentAsString(),
                 CategoryDto.class);
 
-        EqualsBuilder.reflectionEquals(expected, actual, "id");
+        assertEquals(expected, actual);
     }
 }

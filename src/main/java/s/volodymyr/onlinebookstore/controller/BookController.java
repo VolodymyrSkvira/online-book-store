@@ -34,7 +34,6 @@ public class BookController {
     private final BookService bookService;
 
     @PreAuthorize("hasAnyRole('USER','ADMIN')")
-    @ResponseStatus(HttpStatus.OK)
     @GetMapping
     @Operation(summary = "Get all books",
                description = "Receive a list of available books")
@@ -43,7 +42,6 @@ public class BookController {
     }
 
     @PreAuthorize("hasAnyRole('USER','ADMIN')")
-    @ResponseStatus(HttpStatus.OK)
     @GetMapping("/{id}")
     @Operation(summary = "Get book by ID",
                description = "Receive a book by ID")
@@ -70,7 +68,6 @@ public class BookController {
     }
 
     @PreAuthorize("hasAnyRole('USER','ADMIN')")
-    @ResponseStatus(HttpStatus.OK)
     @GetMapping("/search")
     @Operation(summary = "Search for a book",
                description = "Receive all books by given parameters")
@@ -79,7 +76,6 @@ public class BookController {
     }
 
     @PreAuthorize("hasRole('ADMIN')")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
     @PutMapping("/{id}")
     @Operation(summary = "Update book",
                description = "Update a book by ID")

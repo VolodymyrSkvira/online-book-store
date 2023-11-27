@@ -36,8 +36,7 @@ public class CategoryServiceTests {
     private CategoryMapper categoryMapper = new CategoryMapperImpl();
 
     @Test
-    @DisplayName("""
-            """)
+    @DisplayName("Receive a category by a valid id")
     public void getCategoryById_WithValidData_ShouldReturnCategoryDto() {
         Long id = 1L;
 
@@ -46,21 +45,16 @@ public class CategoryServiceTests {
         category.setName("Fiction");
         category.setDescription("Awesome category");
 
-        CategoryDto categoryDto = new CategoryDto(category.getId(),
-                category.getName(),
-                category.getDescription());
-
         when(categoryRepository.findById(id)).thenReturn(Optional.of(category));
-        when(categoryMapper.toDto(category)).thenReturn(categoryDto);
 
         CategoryDto actual = categoryService.getCategoryById(id);
 
-        assertEquals(actual, categoryDto);
+        assertThat(actual).hasFieldOrPropertyWithValue("name", category.getName())
+                .hasFieldOrPropertyWithValue("description", category.getDescription());
     }
 
     @Test
-    @DisplayName("""
-            """)
+    @DisplayName("Receive a category by a non-valid id")
     public void getCategoryById_WithInvalidData_ShouldThrowException() {
         Long id = 1L;
 
@@ -77,8 +71,7 @@ public class CategoryServiceTests {
     }
 
     @Test
-    @DisplayName("""
-            """)
+    @DisplayName("Create category with valid data")
     public void save_WithValidData_ShouldReturnCategoryDto() {
         Long id = 1L;
 
@@ -89,22 +82,17 @@ public class CategoryServiceTests {
         category.setName(requestDto.name());
         category.setDescription(requestDto.description());
 
-        CategoryDto categoryDto = new CategoryDto(id,
-                                                  category.getName(),
-                                                  category.getDescription());
-
         when(categoryMapper.toCategory(requestDto)).thenReturn(category);
         when(categoryRepository.save(category)).thenReturn(category);
-        when(categoryMapper.toDto(category)).thenReturn(categoryDto);
 
         CategoryDto actual = categoryService.save(requestDto);
 
-        assertEquals(actual, categoryDto);
+        assertThat(actual).hasFieldOrPropertyWithValue("name", requestDto.name())
+                .hasFieldOrPropertyWithValue("description", requestDto.description());
     }
 
     @Test
-    @DisplayName("""
-            """)
+    @DisplayName("Update category by a valid id")
     public void update_WithValidData_ShouldReturnCategoryDto() {
         Long id = 1L;
 
@@ -125,8 +113,7 @@ public class CategoryServiceTests {
     }
 
     @Test
-    @DisplayName("""
-            """)
+    @DisplayName("Update category by a non-valid id")
     public void update_WithInvalidData_ShouldThrowException() {
         Long id = 1L;
 
@@ -146,8 +133,7 @@ public class CategoryServiceTests {
     }
 
     @Test
-    @DisplayName("""
-            """)
+    @DisplayName("Delete category by a valid id")
     public void deleteById_WithValidData_ShouldDoNothing() {
         Long id = 1L;
 
