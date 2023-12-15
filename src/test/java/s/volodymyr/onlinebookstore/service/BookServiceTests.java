@@ -6,9 +6,9 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static s.volodymyr.onlinebookstore.util.UtilBookDataSupplier.getDefaultCreateBookRequestDto;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import org.junit.jupiter.api.DisplayName;
@@ -43,7 +43,14 @@ public class BookServiceTests {
     @DisplayName("Create a book with valid data")
     public void save_WithValidData_ShouldReturnBookDto() {
         Long id = 1L;
-        CreateBookRequestDto requestDto = getDefaultCreateBookRequestDto();
+
+        CreateBookRequestDto requestDto = new CreateBookRequestDto("Turkey Trouble",
+                "Wendi Silvano",
+                "9780761455296",
+                BigDecimal.valueOf(19),
+                "Awesome book",
+                "image_1",
+                List.of(id));
 
         Book book = new Book();
         book.setTitle(requestDto.title());
@@ -124,7 +131,13 @@ public class BookServiceTests {
         book.setCoverImage("Test image");
         book.setCategories(Set.of(new Category(id)));
 
-        CreateBookRequestDto requestDto = getDefaultCreateBookRequestDto();
+        CreateBookRequestDto requestDto = new CreateBookRequestDto("Turkey Trouble",
+                "Wendi Silvano",
+                "9780761455296",
+                BigDecimal.valueOf(19),
+                "Awesome book",
+                "image_1",
+                List.of(id));
 
         when(bookRepository.getBookById(id)).thenReturn(Optional.of(book));
         when(bookRepository.save(book)).thenReturn(book);
@@ -144,7 +157,13 @@ public class BookServiceTests {
     public void update_WithInvalidData_ShouldThrowException() {
         Long id = 1L;
 
-        CreateBookRequestDto requestDto = getDefaultCreateBookRequestDto();
+        CreateBookRequestDto requestDto = new CreateBookRequestDto("Turkey Trouble",
+                "Wendi Silvano",
+                "9780761455296",
+                BigDecimal.valueOf(19),
+                "Awesome book",
+                "image_1",
+                List.of(id));
 
         when(bookRepository.getBookById(id)).thenReturn(Optional.empty());
 
